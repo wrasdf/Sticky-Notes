@@ -1,7 +1,7 @@
 ﻿$(function(){
 		
 
-		PageNavEffect.addNavBar({title:'Open DataBase',open:function(){			
+		PageNavEffect.addNavBar({title:'Open DataBase',open:function(){	
 			Sticky.init("#stage_"+PageNavEffect.getCurrentIndex());
 		},close:function(){}});
 		PageNavEffect.addNavBar({title:'Canvas'});
@@ -245,7 +245,13 @@ var Sticky = (function(){
 		
 	var addStickyList = {};	
 	
-	var searchList = [];	
+	var searchList = [];
+	
+	var colorList = [
+		{c:"red",l:"3",b:"#f00"},
+		{c:"yellow",l:"2",b:"#ff0"},			
+		{c:"gray",l:"1",b:"#ccc"}
+	]		
 
 	function randLeftNum(){
 		var m = 0,n = randLeftMaxNum || 180;
@@ -269,7 +275,8 @@ var Sticky = (function(){
 	
 	function init(ID){
 		
-	
+		
+		
 		if(!$("#addBtn")[0]){
 			
 			domId = ID;
@@ -333,6 +340,58 @@ var Sticky = (function(){
 		$(id).find('.sfooter').html(modifiedString());
 	}
 	
+	function addColorSetting(id){
+		
+
+		
+		var str ='';
+		
+		$.each(colorList,function(index,value){
+			
+			str += '<li l="'+value.l+'" class="'+value.c+'" ></li>'
+			
+		});
+		
+		$(id + ' ul').html(str);
+		
+		$(id + ' ul li').bind('click',function(){
+			var color = $(this).attr('l');
+			var sLeve = $(this).parent().parent().parent();	
+			
+			if(sLeve.attr('l') == color){
+				return;
+			}
+			sLeve.attr('l', color);		
+			
+			$(id).removeClass('urgent').removeClass('normal').removeClass('down');
+			if(color == '3'){
+				$(id).addClass('urgent');
+				$(this).parent().parent().css('background','#f00').parent().css({'background':'#fb5f5f','color':'#fff'}).find('.sfooter').css({'background':'#fd4f4f','color':'#fff'});
+				
+			}else if(color == '1'){
+				$(id).addClass('normal');	
+				$(this).parent().parent().css('background','#ccc').parent().css({'background':'#e8e7e7','color':'#000'}).find('.sfooter').css({'background':'#d8d6d6','color':'#000'});
+			
+			}else if(color == '2'){
+				$(id).addClass('down');	
+				$(this).parent().parent().css('background','#feea3d').parent().css({'background':'#FEF49C','color':'#000'}).find('.sfooter').css({'background':'#fcee6f','color':'#000'});				
+			}
+		
+			ODBO.update({
+				id : $(id).attr("n"),
+				text : $(id).find('.edit').html(),
+				timestamp : modifiedString(),
+				zIndex : $(id).css("zIndex"),
+				left : $(id).css("left"),
+				top : $(id).css("top"),
+				level : $(id).attr('l')
+			});			
+				
+		});
+		
+	}
+	
+	
 	function addSticky(options,flag){
 		
 		var settings = {
@@ -341,7 +400,8 @@ var Sticky = (function(){
 			zIndex : zIndex,
 			left : randLeftNum() + 'px',
 			top : randTopNum() + 'px',
-			timestamp : modifiedString()
+			timestamp : modifiedString(),
+			level : 2
 		};
 		
 		if(options.id >= stickyIndex){
@@ -355,13 +415,25 @@ var Sticky = (function(){
 		
 		if(settings.id >= stickyIndex){
 			stickyIndex = settings.id;
-		}		
+		}	
+			
+		var colorClass = 'normal';
+		if(settings.level == 1){
+			colorClass = 'down';
+		}else if(settings.level == 2){
+			colorClass = 'normal';
+		}else if(settings.level == 3){
+			colorClass = 'urgent';
+		}
 		
-		var str = '<div class="sticky" n="'+settings.id+'" style="z-index:'+settings.zIndex+'; left:'+settings.left+'; top:'+settings.top+'" id="stickyId_'+settings.id+'"><h2></h2><span class="close"></span><section class="edit" contenteditable="true">'+settings.text+'</section><footer class="sfooter">'+settings.timestamp+'</footer></div>';
-		$(domId).append(str);	
+		var str = '<div class="sticky '+colorClass+'" l="'+settings.level+'" n="'+settings.id+'" style="z-index:'+settings.zIndex+'; left:'+settings.left+'; top:'+settings.top+'" id="stickyId_'+settings.id+'"><h2><div class="o" title="Change Color." ></div><ul></ul></h2><span class="close"></span><section class="edit" contenteditable="true">'+settings.text+'</section><footer class="sfooter">'+settings.timestamp+'</footer></div>';
+		$(domId).append(str);
+	
 		
-		var currentAddId = "#stickyId_"+settings.id;	
-
+		var currentAddId = "#stickyId_"+settings.id;
+			
+		addColorSetting(currentAddId);
+		
 		$(currentAddId).draggable({ 
 			containment: 'parent',
 			handle : 'h2',
@@ -375,7 +447,8 @@ var Sticky = (function(){
 					timestamp : modifiedString(),
 					zIndex : $(this).css("zIndex"),
 					left : $(this).css("left"),
-					top : $(this).css("top")
+					top : $(this).css("top"),
+					level : $(this).attr('l')
 				});
 				timeUPdate(currentAddId);				
 			},
@@ -386,7 +459,8 @@ var Sticky = (function(){
 					timestamp : modifiedString(),
 					zIndex : $(this).css("zIndex"),
 					left : $(this).css("left"),
-					top : $(this).css("top")
+					top : $(this).css("top"),
+					level : $(this).attr('l')
 				});
 				timeUPdate(currentAddId);				
 			}
@@ -399,20 +473,26 @@ var Sticky = (function(){
 				timestamp : modifiedString(),
 				zIndex : $(this).css("zIndex"),
 				left : $(this).css("left"),
-				top : $(this).css("top")
+				top : $(this).css("top"),
+				level : $(this).attr('l')
 			});
 			timeUPdate(currentAddId);
 		}).find(".edit").bind("keyup",function(){
+			// edit bind function
+			
 			ODBO.update({
 				id : $(this).parent().attr("n"),
 				text : $(this).html(),
 				timestamp : modifiedString(),
 				zIndex : $(this).parent().css("zIndex"),
 				left : $(this).parent().css("left"),
-				top : $(this).parent().css("top")
+				top : $(this).parent().css("top"),
+				level : $(this).parent().attr('l')
 			});
-			timeUPdate(currentAddId);			
-		}).parent().find('.close').bind("click",function(){		
+			timeUPdate(currentAddId);
+						
+		}).parent().find('.close').bind("click",function(){	
+			// close sticky notes function	
 			$(this).parent().hide('slow',function(){
 				searchList.pop();
 				if(searchList.length <= 0 && $('.shadow').css('display') != 'none'){
@@ -421,6 +501,28 @@ var Sticky = (function(){
 				$(this).remove();
 				ODBO.del(settings.id);
 			});			
+		}).parent().find('.o').bind('click',function(){
+			
+			var ulDom = $(this).parent().find('ul');
+			console.log([ulDom,ulDom.css('display')])
+			if(ulDom.css('display') == 'none'){
+			
+				ulDom.css({"width":"2px","height":"2px","display":"block"}).animate({
+					"width":"60px","height":"15px", "left":"15px"
+				},300,"linear",function(){
+					ulDom.css({'opacity':1,"display": "block"})
+				});
+				
+			}else{
+				
+				ulDom.animate({
+					"width":"2px","height":"2px",'opacity':0 , "left": "0px"
+				},300,"linear",function(){
+					ulDom.css({'opacity':1,"display": "none"})
+				});
+								
+			}
+			
 		});	
 
 		addStickyList[settings.id] = settings;
@@ -439,8 +541,6 @@ var Sticky = (function(){
 		$('.shadow').css({'display':'block','width':$('.stage').width(),'height':$('.stage').height(),'zIndex':zIndex});
 		zIndex ++;
 	}
-
-
 	
 	var ODBO = (function(){
 		
@@ -457,10 +557,13 @@ var Sticky = (function(){
 			}
 		}catch(e){}
 		
+
+		//dropTable('WebkitTest');
+		
 		var idIndex = 0;
 
 		function load(cb){
-
+			
 			ODB.transaction(function(tx){
 				tx.executeSql("SELECT * FROM WebKitTest",[],function(tx,o){
 					
@@ -479,7 +582,7 @@ var Sticky = (function(){
 					}					
 
 				},function(tx,e){
-					tx.executeSql("CREATE TABLE WebKitTest (id REAL UNIQUE, text TEXT, timestamp TEXT, zIndex REAL, left REAL, top REAL)");
+					tx.executeSql("CREATE TABLE WebKitTest (id REAL UNIQUE, text TEXT, timestamp TEXT, zIndex REAL, left REAL, top REAL, level REAL)");
 				});
 			});
 
@@ -487,7 +590,7 @@ var Sticky = (function(){
 
 		function updateItem (options) {
 			ODB.transaction(function(tx){ //id, text, timestamp, zIndex, left, top
-				tx.executeSql("UPDATE WebKitTest SET text = ?, timestamp = ?, zIndex = ?, left = ? , top = ? WHERE id = ?", [options.text, options.timestamp, options.zIndex, options.left, options.top, options.id]);
+				tx.executeSql("UPDATE WebKitTest SET text = ?, timestamp = ?, zIndex = ?, left = ? , top = ? , level = ? WHERE id = ?", [options.text, options.timestamp, options.zIndex, options.left, options.top, options.level, options.id]);
 			},function(tx,error){
 				alert("Error Update Item!");
 			});	
@@ -495,7 +598,7 @@ var Sticky = (function(){
 
 		function addItem(options){
 			ODB.transaction(function(tx){
-				tx.executeSql("INSERT INTO WebKitTest (id, text, timestamp, zIndex, left, top) VALUES (?,?,?,?,?,?)",[options.id, options.text, options.timestamp, options.zIndex, options.left, options.top],function(tx,o){});
+				tx.executeSql("INSERT INTO WebKitTest (id, text, timestamp, zIndex, left, top, level) VALUES (?,?,?,?,?,?,?)",[options.id, options.text, options.timestamp, options.zIndex, options.left, options.top, options.level],function(tx,o){});
 			},function(tx,error){
 				alert("Error Add Item!");
 			});		
@@ -528,7 +631,7 @@ var Sticky = (function(){
 
 		function dropTable(table){
 			ODB.transaction(function(tx){
-				tx.executeSql("DROP TABLE "+table);
+				tx.executeSql("DROP TABLE "+ table);
 			},function(tx,error){
 				alert("Error Drop Table!");
 			});		
@@ -562,6 +665,58 @@ var Sticky = (function(){
 	
 	
 })();
+
+
+
+
+function extend(target, source) {
+
+	if (!target || !source) {
+		return null;
+	}
+
+	for (var i in source) {
+		target[i] = source[i]
+	}
+
+	return target;
+
+}
+
+
+
+extend(String.prototype, (function () {
+
+	function encodeHTML() {
+		var str = this.valueOf();
+		str = str.replace(/\&/g, "&amp;");
+		str = str.replace(/\>/g, "&gt;");
+		str = str.replace(/\</g, "&lt;");
+		str = str.replace(/\"/g, "&quot;");
+		str = str.replace(/\'/g, "&#39;");
+		return str;
+	}
+
+	function decodeHTML() {
+		var str = this.valueOf();
+		str = str.replace(/&amp;/g, "&");
+		str = str.replace(/&gt;/g, ">");
+		str = str.replace(/&lt;/g, "<");
+		str = str.replace(/&quot;/g, '"');
+		str = str.replace(/&#039;/g, "'");
+		return str;
+	}
+
+
+	return {
+		encodeHTML: encodeHTML,
+		decodeHTML: decodeHTML
+	}
+
+
+
+})());
+
 
 
 
