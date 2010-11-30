@@ -1,0 +1,228 @@
+html{
+	cursor:default;	
+}
+.wrapper{
+	width:100%;	
+	color:#c7edfd；
+
+}
+header{
+	height:60px;
+	overflow:hidden;
+	border-bottom:1px #ccc solid;
+	background:-webkit-gradient(linear,left top,left bottom,from(#fff),to(#00ACF7));/*for webkit*/
+	background:-moz-linear-gradient(center bottom,#00ACF7,#fff);	
+}
+header h1{
+	position:absolute;
+	left:20px;
+	top:20px;
+	font-size:20px;
+	text-shadow: -2px 2px 2px rgba(0,0,0,.5);
+	-webkit-transition: -webkit-transform 0.12s linear;	
+	-moz-transition: -webkit-transform 0.12s linear;		
+	transition: -webkit-transform 0.12s linear;		
+}
+header h1:hover{
+	-webkit-transform: rotate(-2deg);
+	-moz-transform: rotate(-2deg);
+	transform: rotate(-2deg);
+	
+}
+
+.body-content {
+	padding:10px;
+}
+.body-content .start{
+	margin:0 0 0 265px;
+	text-align:center;
+	font-size:30px;
+	text-shadow: 2px 2px 2px rgba(0,0,0,.5);
+	
+}
+.body-content .nav{
+	float:left;
+	width:230px;
+	margin:0px 0 20px 0px;
+	padding:10px;
+	border:1px #1eb6f8 solid;
+	-webkit-border-radius: 15px;
+	-moz-border-radius: 15px;
+	border-radius: 15px;	
+	box-shadow:1px 1px 5px #92dbf8;
+	-moz-box-shadow:1px 1px 5px #92dbf8;
+	-webkit-box-shadow:1px 1px 5px #92dbf8;
+	
+}
+.body-content .nav li{
+	text-align:left;
+	margin:0 auto 2px;
+	padding:2px 6px;
+	line-height:25px;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+	cursor:pointer;
+	-webkit-transition: all 0.1s ease-in;
+}
+.body-content .nav li.select{
+	font-weight:bold;	
+	background:#c7edfd;
+	padding:2px 12px;
+	text-align:right;	
+}
+
+.body-content .nav li:hover{
+	font-weight:bold;	
+	background:#c7edfd;
+	padding:2px 24px; 
+}
+
+.body-content .nav li.select:hover{
+	font-weight:bold;	
+	background:#c7edfd;
+	padding:2px 12px;
+	text-align:right;	
+}
+
+
+.body-content .stage{
+	float:left;
+	margin:0 0 0 15px;
+	width:20px;
+	height:20px;
+	border:1px #1eb6f8 solid;
+	-webkit-border-radius: 15px;
+	-moz-border-radius: 15px;
+	border-radius: 15px;	
+	box-shadow:1px 1px 5px #92dbf8;
+	-moz-box-shadow:1px 1px 5px #92dbf8;
+	-webkit-box-shadow:1px 1px 5px #92dbf8;
+	position:relative;
+}
+
+.demo{
+	position:absolute;
+	left:0px;
+	top:0px;
+	display:none;	
+	z-index:2;
+}
+
+.imageContent{
+	margin: 0px auto;
+	height:240px;
+	overflow:hidden;
+	border:1px #ccc solid;
+}
+.imageContent ul{
+	position:relative;
+	float:left;
+}
+.imageContent ul li{
+	position:absolute;	
+}
+.imageContent ul img{
+	border:2px #fff solid;
+	-webkit-box-shadow: 2px 2px 2px  #2b282b;
+	-moz-box-shadow: 2px 2px 2px #2b282b;
+	box-shadow: 2px 2px 2px #2b282b;
+}
+
+.shadow{
+	position:absolute;
+	left:-10px;
+	top:-10px;
+	display:none;
+	-webkit-border-radius: 15px;
+	-moz-border-radius: 15px;
+	border-radius: 15px;
+	background-color:rgba(0,0,0,0.8);
+	opacity: 0.85
+}
+.shadow span{
+	display:inline-block;
+	float:right;
+	width:25px;
+	height:25px;
+	cursor:pointer;
+	background:url("../images/close_icon.png") 0 0 no-repeat;
+}
+
+
+/*  sticky css  */
+
+.sticky{
+	width:180px;
+	height:220px;
+	position:absolute;
+	-moz-box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.5);
+	-webkit-box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.5);
+	box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.5);
+	background:#FEF49C;		
+}
+.sticky h2{
+	width:180px;
+	height:18px;
+	background:#feea3d;
+	cursor:pointer;
+	-moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.5);
+	-webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.5);
+	box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.5);	
+}
+.sticky .close{
+	position:absolute;
+	right:-10px;
+	top:-10px;
+	width:25px;
+	height:25px;
+	display:none;
+}
+.sticky:hover .close{
+	display:block;
+	background:url("../images/close_icon.png") 0 0 no-repeat;		
+}
+
+.sticky:hover .close:hover{
+	display:block;
+	background:url("../images/close_icon.png") -25px 0 no-repeat;
+}
+
+.closed{
+	-webkit-transition: -webkit-transform .5s ease-in, opacity .5s ease-in;
+	-webkit-transform-origin: 0 0;
+	-webkit-transform: skew(30deg, 0deg) scale(0);
+	opacity: 0;		
+}
+
+
+section.edit {
+	margin:5px;
+	height:170px;		
+	-webkit-line-break: after-white-space;
+	-webkit-nbsp-mode: space;
+	-webkit-user-modify: read-write;
+	word-wrap: break-word;
+	overflow-y:auto;
+	overflow-x:hidden;
+}
+
+footer.sfooter{
+	display:block;
+	height:20px;
+	width:180px;
+	background:#ccc;
+	position:absolute;
+	bottom:0px;
+	left:0px;
+	text-align:left;
+	line-height:20px;
+	font-size:10px;
+	text-indent:5px;
+}
+
+
+
+
+
+
