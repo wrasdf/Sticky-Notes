@@ -4,32 +4,11 @@
 		PageNavEffect.addNavBar({title:'Open DataBase',open:function(){	
 			Sticky.init("#stage_"+PageNavEffect.getCurrentIndex());
 		},close:function(){}});
-		PageNavEffect.addNavBar({title:'Canvas'});
+		PageNavEffect.addNavBar({title:'Canvas',open:function(){
+			$("#stage_"+PageNavEffect.getCurrentIndex()).html('No Demo here! Just For Show!');
+		}});
 
-		
-		/*
-		var navList = new NavEffect(effectStage);
-		
-		navList.addNavbar({title:'Css Image Albums',open:function(){
-			var test = new ImageEffect();
-			test.add('images/image1.jpg');
-			test.add('images/spice.jpg');
-			test.add('images/image1.jpg');
-			test.add('images/image1.jpg');
-			test.add('images/image1.jpg');
-			test.add('images/spice.jpg');
-			test.add('images/image1.jpg');
-			test.add('images/spice.jpg');
-			test.add('images/image1.jpg');
-			test.add('images/spice.jpg');		
-			//test.init();
-		},close:function(){}});
-		navList.addNavbar({title:'Open DataBase',open:function(){},close:function(){alert('1 close')}});
-		navList.addNavbar({title:'Canvas'});
-		navList.addNavbar();
-		navList.addNavbar();	
-		navList.addNavbar();		
-		*/
+
 });
 
 
