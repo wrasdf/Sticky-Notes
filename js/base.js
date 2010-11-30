@@ -238,8 +238,6 @@ var Sticky = (function(){
 	// zindex for different sticky		
 	var zIndex = 1;
 	
-	var StickyBuild = true;
-	
 	var domId,randLeftMaxNum,randTopMaxNum;
 	
 	// for unique sticky 
@@ -293,6 +291,7 @@ var Sticky = (function(){
 			
 			$('.shadow span').live('click',function(){
 				$(this).parent().css('display','none');
+				searchList = [];
 			});	
 			
 			$("#searchText").live('focus',function(){
@@ -312,26 +311,21 @@ var Sticky = (function(){
 				
 				if(e.keyCode == '27'){
 					if($('.shadow').css('display') != 'none'){
-						$('.shadow').css('display','none')
+						$('.shadow').css('display','none');
+						searchList = [];
 					}					
 				}
-			}).bind('resize',function(){
-				
-				if($('.shadow').css('display') == 'none'){
-					
-					
-				}
-				
-			});
+			})
 			
-			StickyBuild = false;
+			$(window).bind('resize',function(){
+				if($('.shadow').css('display') != 'none'){					
+					$('.shadow').css({"width":$('.stage').width(),"height":$('.stage').height()});
+				}				
+			});
 			
 			ODBO.load(Sticky);								
 			
-		}		
-
-	
-				
+		}				
 	}
 
 	
@@ -394,8 +388,7 @@ var Sticky = (function(){
 					left : $(this).css("left"),
 					top : $(this).css("top")
 				});
-				timeUPdate(currentAddId);
-				
+				timeUPdate(currentAddId);				
 			}
 		}).bind('click',function(){
 			$(this).css('zIndex',zIndex);
@@ -422,7 +415,6 @@ var Sticky = (function(){
 		}).parent().find('.close').bind("click",function(){		
 			$(this).parent().hide('slow',function(){
 				searchList.pop();
-				console.log(searchList)
 				if(searchList.length <= 0 && $('.shadow').css('display') != 'none'){
 					$('.shadow').css('display','none')
 				}
@@ -439,17 +431,13 @@ var Sticky = (function(){
 		if(flag){	
 			ODBO.add(settings);	
 		}		
-		
+			
 	}
 	
 	
-	function searchSticky(){
-		
-		
+	function searchSticky(){	
 		$('.shadow').css({'display':'block','width':$('.stage').width(),'height':$('.stage').height(),'zIndex':zIndex});
-		
-		zIndex ++;		
-		
+		zIndex ++;
 	}
 
 
@@ -491,23 +479,17 @@ var Sticky = (function(){
 					}					
 
 				},function(tx,e){
-					tx.executeSql("CREATE TABLE WebKitTest (id REAL UNIQUE, text TEXT, timestamp TEXT, zIndex REAL, left REAL, top REAL)",function(){
-						alert(234)
-					});
+					tx.executeSql("CREATE TABLE WebKitTest (id REAL UNIQUE, text TEXT, timestamp TEXT, zIndex REAL, left REAL, top REAL)");
 				});
 			});
 
 		}
 
 		function updateItem (options) {
-			console.log(options);
 			ODB.transaction(function(tx){ //id, text, timestamp, zIndex, left, top
-				tx.executeSql("UPDATE WebKitTest SET text = ?, timestamp = ?, zIndex = ?, left = ? , top = ? WHERE id = ?", [options.text, options.timestamp, options.zIndex, options.left, options.top, options.id],function(tx,o){
-					console.log([tx,o]);
-				});
+				tx.executeSql("UPDATE WebKitTest SET text = ?, timestamp = ?, zIndex = ?, left = ? , top = ? WHERE id = ?", [options.text, options.timestamp, options.zIndex, options.left, options.top, options.id]);
 			},function(tx,error){
 				alert("Error Update Item!");
-				console.log(error);
 			});	
 		}
 
@@ -516,7 +498,6 @@ var Sticky = (function(){
 				tx.executeSql("INSERT INTO WebKitTest (id, text, timestamp, zIndex, left, top) VALUES (?,?,?,?,?,?)",[options.id, options.text, options.timestamp, options.zIndex, options.left, options.top],function(tx,o){});
 			},function(tx,error){
 				alert("Error Add Item!");
-				console.log([error,'add Error']);
 			});		
 		}
 
@@ -525,23 +506,23 @@ var Sticky = (function(){
 				tx.executeSql("DELETE FROM WebKitTest WHERE id = ?",[id]);
 			},function(tx,error){
 				alert("Error Delete Item!");
-				console.log(error);
 			});
 		}
 
 		function searchItemByStr(str){
 				ODB.transaction(function(tx){
 					tx.executeSql("SELECT id, text FROM WebKitTest WHERE text LIKE '%"+str+"%' ",[],function(tx,o){				
+						if(o.rows.length == 0){
+							return;
+						}
 						for(var i=0 ,l = o.rows.length ; i < l; i++){
-							var row = o.rows.item(i);
-							zIndex++;
+							var row = o.rows.item(i);							
 							$('#stickyId_'+row['id']).css('zIndex',zIndex);
+							zIndex++;
 							searchList.push(row['id']);
 						}						
 											
 					});					
-				},function(tx,error){
-					console.log([error,'search Error']);
 				});	
 		}
 
@@ -550,18 +531,7 @@ var Sticky = (function(){
 				tx.executeSql("DROP TABLE "+table);
 			},function(tx,error){
 				alert("Error Drop Table!");
-				console.log(error);
 			});		
-		}
-
-		function showTable(json){
-			console.log(json)
-			var str = "<table>";		
-			for(var i=0 , l= json.length; i<l; i++){
-				str += "<tr><td>"+json[i].id+"</td><td>"+json[i].text+"</td><td>"+json[i].timestamp+"</td><td>"+json[i].zIndex+"</td><td>"+json[i].left+"</td><td>"+json[i].top+"</td></tr>";
-			}
-			str += "</table>";
-			$('div.test').html(str);		
 		}
 
 		function getIdIndex(){

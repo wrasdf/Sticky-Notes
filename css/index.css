@@ -99,6 +99,7 @@ header h1:hover{
 	-moz-box-shadow:1px 1px 5px #92dbf8;
 	-webkit-box-shadow:1px 1px 5px #92dbf8;
 	position:relative;
+	overflow:hidden;
 }
 
 .demo{
@@ -106,7 +107,7 @@ header h1:hover{
 	left:0px;
 	top:0px;
 	display:none;	
-	z-index:2;
+	z-index:2;	
 }
 
 .imageContent{
@@ -138,7 +139,7 @@ header h1:hover{
 	-moz-border-radius: 15px;
 	border-radius: 15px;
 	background-color:rgba(0,0,0,0.8);
-	opacity: 0.85
+	opacity: 0.85;
 }
 .shadow span{
 	display:inline-block;
@@ -148,7 +149,9 @@ header h1:hover{
 	cursor:pointer;
 	background:url("../images/close_icon.png") 0 0 no-repeat;
 }
-
+.shadow span:hover{
+	background:url("../images/close_icon.png") -25px 0 no-repeat;
+}
 
 /*  sticky css  */
 
@@ -163,7 +166,7 @@ header h1:hover{
 }
 .sticky h2{
 	width:180px;
-	height:18px;
+	height:13px;
 	background:#feea3d;
 	cursor:pointer;
 	-moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.5);
