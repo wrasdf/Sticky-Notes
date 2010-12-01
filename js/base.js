@@ -254,7 +254,7 @@ var Sticky = (function(){
 	
 	function init(ID){
 		
-		
+		//ODBO.drop('WebkitTest');
 		
 		if(!$("#addBtn")[0]){
 			
@@ -289,8 +289,10 @@ var Sticky = (function(){
 			$(document).bind('keydown',function(e){
 				if(e.keyCode == '13'){
 					if($("#addBtn").parent().css('display') != 'none' && $("#searchText").val() != '' && inputFocus){
-						searchSticky();				
-						ODBO.search($("#searchText").val());
+						searchSticky();		
+						try{		
+							ODBO.search($("#searchText").val());
+						}catch(e){}
 						$("#searchText").blur();						
 					}
 				}
@@ -308,8 +310,10 @@ var Sticky = (function(){
 					$('.shadow').css({"width":$('.stage').width(),"height":$('.stage').height()});
 				}				
 			});
-			
-			ODBO.load(Sticky);								
+			try{
+				ODBO.load(Sticky);
+			}catch(e){}
+											
 			
 		}				
 	}
@@ -355,16 +359,18 @@ var Sticky = (function(){
 				$(id).addClass('down');	
 				$(this).parent().parent().css('background','#feea3d').parent().css({'background':'#FEF49C','color':'#000'}).find('.sfooter').css({'background':'#fcee6f','color':'#000'});				
 			}
-		
-			ODBO.update({
-				id : $(id).attr("n"),
-				text : $(id).find('.edit').html(),
-				timestamp : modifiedString(),
-				zIndex : $(id).css("zIndex"),
-				left : $(id).css("left"),
-				top : $(id).css("top"),
-				level : $(id).attr('l')
-			});			
+			
+			try{
+				ODBO.update({
+					id : $(id).attr("n"),
+					text : $(id).find('.edit').html(),
+					timestamp : modifiedString(),
+					zIndex : $(id).css("zIndex"),
+					left : $(id).css("left"),
+					top : $(id).css("top"),
+					level : $(id).attr('l')
+				});				
+			}catch(e){}
 				
 		});
 		
@@ -420,54 +426,63 @@ var Sticky = (function(){
 			start : function(e){
 				$(this).css('zIndex',zIndex);
 				zIndex ++;
-				ODBO.update({
-					id : $(this).attr("n"),
-					text : $(this).find('.edit').html(),
-					timestamp : modifiedString(),
-					zIndex : $(this).css("zIndex"),
-					left : $(this).css("left"),
-					top : $(this).css("top"),
-					level : $(this).attr('l')
-				});
+				try{
+					ODBO.update({
+						id : $(this).attr("n"),
+						text : $(this).find('.edit').html(),
+						timestamp : modifiedString(),
+						zIndex : $(this).css("zIndex"),
+						left : $(this).css("left"),
+						top : $(this).css("top"),
+						level : $(this).attr('l')
+					});					
+				}catch(e){}
+
 				timeUPdate(currentAddId);				
 			},
 			stop:function(e){
-				ODBO.update({
-					id : $(this).attr("n"),
-					text : $(this).find('.edit').html(),
-					timestamp : modifiedString(),
-					zIndex : $(this).css("zIndex"),
-					left : $(this).css("left"),
-					top : $(this).css("top"),
-					level : $(this).attr('l')
-				});
+				try{
+					ODBO.update({
+						id : $(this).attr("n"),
+						text : $(this).find('.edit').html(),
+						timestamp : modifiedString(),
+						zIndex : $(this).css("zIndex"),
+						left : $(this).css("left"),
+						top : $(this).css("top"),
+						level : $(this).attr('l')
+					});					
+				}catch(e){}
 				timeUPdate(currentAddId);				
 			}
 		}).bind('click',function(){
 			$(this).css('zIndex',zIndex);
-			zIndex ++;	
-			ODBO.update({
-				id : $(this).attr("n"),
-				text : $(this).find('.edit').html(),
-				timestamp : modifiedString(),
-				zIndex : $(this).css("zIndex"),
-				left : $(this).css("left"),
-				top : $(this).css("top"),
-				level : $(this).attr('l')
-			});
+			zIndex ++;
+			try{
+				ODBO.update({
+					id : $(this).attr("n"),
+					text : $(this).find('.edit').html(),
+					timestamp : modifiedString(),
+					zIndex : $(this).css("zIndex"),
+					left : $(this).css("left"),
+					top : $(this).css("top"),
+					level : $(this).attr('l')
+				});				
+			}catch(e){}	
 			timeUPdate(currentAddId);
 		}).find(".edit").bind("keyup",function(){
 			// edit bind function
-			
-			ODBO.update({
-				id : $(this).parent().attr("n"),
-				text : $(this).html(),
-				timestamp : modifiedString(),
-				zIndex : $(this).parent().css("zIndex"),
-				left : $(this).parent().css("left"),
-				top : $(this).parent().css("top"),
-				level : $(this).parent().attr('l')
-			});
+			try{
+				ODBO.update({
+					id : $(this).parent().attr("n"),
+					text : $(this).html(),
+					timestamp : modifiedString(),
+					zIndex : $(this).parent().css("zIndex"),
+					left : $(this).parent().css("left"),
+					top : $(this).parent().css("top"),
+					level : $(this).parent().attr('l')
+				});				
+			}catch(e){}
+
 			timeUPdate(currentAddId);
 						
 		}).parent().find('.close').bind("click",function(){	
@@ -483,7 +498,6 @@ var Sticky = (function(){
 		}).parent().find('.o').bind('click',function(){
 			
 			var ulDom = $(this).parent().find('ul');
-			console.log([ulDom,ulDom.css('display')])
 			if(ulDom.css('display') == 'none'){
 			
 				ulDom.css({"width":"2px","height":"2px","display":"block"}).animate({
@@ -509,8 +523,10 @@ var Sticky = (function(){
 		zIndex ++;
 		stickyIndex ++;
 		
-		if(flag){	
-			ODBO.add(settings);	
+		if(flag){
+			try{
+				ODBO.add(settings);
+			}catch(e){}					
 		}		
 			
 	}
