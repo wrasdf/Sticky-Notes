@@ -366,7 +366,7 @@ var Sticky = (function(){
         var pie1 = new RGraph.Pie('pieDom'+canvasIndex, json.arr); // Create the pie object
 		pie1.Set('chart.labels', json.labels);
         pie1.Set('chart.gutter', 35);
-        pie1.Set('chart.title', "Sticky Notes Show");
+        pie1.Set('chart.title', "Sticky Notes Statistics");
         pie1.Set('chart.shadow', true);		
         pie1.Set('chart.highlight.style', '3d'); // Defaults to 3d anyway; can be 2d or 3d
 		pie1.Set('chart.colors', ['rgb(255,0,0)', '#ff0', '#ccc', 'rgb(0,0,255)', 'rgb(255,255,0)', 'rgb(0,255,255)', '#f00', '#ff0', 'black', 'white']);
