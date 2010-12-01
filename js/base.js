@@ -229,7 +229,7 @@ var Sticky = (function(){
 	var colorList = [
 		{c:"red",l:"3",b:"#f00",t:'Urgent'},
 		{c:"yellow",l:"2",b:"#ff0",t:'Normal'},			
-		{c:"gray",l:"1",b:"#ccc",t:'Done'}
+		{c:"gray",l:"1",b:"#ccc",t:'Low'}
 	]		
 
 	function randLeftNum(){
@@ -718,8 +718,8 @@ var Sticky = (function(){
 						}
 					}
 					json.arr = [l3,l2,l1];	
-					json.labels = ["Urgent "+l3,"Normal "+l2,"Done "+l1];
-					json.tooltips = ["Urgent "+l3,"Normal "+l2,"Done "+l1];					
+					json.labels = ["Urgent "+l3,"Normal "+l2,"Low "+l1];
+					json.tooltips = ["Urgent "+l3,"Normal "+l2,"Low "+l1];					
 					cb(json);
 										
 				});
