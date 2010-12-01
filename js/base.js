@@ -493,7 +493,9 @@ var Sticky = (function(){
 					$('.shadow').css('display','none')
 				}
 				$(this).remove();
-				ODBO.del(settings.id);
+				try{
+					ODBO.del(settings.id);
+				}catch(e){}
 			});			
 		}).parent().find('.o').bind('click',function(){
 			
