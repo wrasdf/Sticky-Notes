@@ -227,9 +227,9 @@ var Sticky = (function(){
 	var searchList = [];
 	
 	var colorList = [
-		{c:"red",l:"3",b:"#f00"},
-		{c:"yellow",l:"2",b:"#ff0"},			
-		{c:"gray",l:"1",b:"#ccc"}
+		{c:"red",l:"3",b:"#f00",t:'Urgent'},
+		{c:"yellow",l:"2",b:"#ff0",t:'Normal'},			
+		{c:"gray",l:"1",b:"#ccc",t:'Done'}
 	]		
 
 	function randLeftNum(){
@@ -262,7 +262,7 @@ var Sticky = (function(){
 			randLeftMaxNum = $(domId).width() - 180;
 			randTopMaxNum = $(domId).height() - 220;			
 			
-			$("<input type='button' id='addBtn' value='Add new note' /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='text' id='searchText' value='' /> <input type='button' id='searchBtn' value='search' /><div class='shadow'><span></span></div>").appendTo(domId);
+			$("<input type='button' id='addBtn' value='Add new note' /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='text' id='searchText' value='' /> <input type='button' id='searchBtn' value='search' />  <input type='button' id='canvasBtn' value='showStatistic' /><div class='shadow'><span></span></div>").appendTo(domId);
 			
 			$("#addBtn").live('click',function(){				
 				addSticky({},true)
@@ -278,12 +278,22 @@ var Sticky = (function(){
 			$('.shadow span').live('click',function(){
 				$(this).parent().css('display','none');
 				searchList = [];
+				
+				if($('.pieDom').css('display') != 'none'){
+					$('.pieDom').remove();
+					canvasIndex++;
+				}
+				
 			});	
 			
 			$("#searchText").live('focus',function(){
 				inputFocus = true;
 			}).live('blur',function(){
 				inputFocus = null;
+			});
+			
+			$("#canvasBtn").live('click',function(){
+				canvasPie();
 			});
 			
 			$(document).bind('keydown',function(e){
@@ -301,6 +311,11 @@ var Sticky = (function(){
 					if($('.shadow').css('display') != 'none'){
 						$('.shadow').css('display','none');
 						searchList = [];
+						
+						if($('.pieDom').css('display') != 'none'){
+							$('.pieDom').remove();
+							canvasIndex++;
+						}												
 					}					
 				}
 			})
@@ -317,6 +332,62 @@ var Sticky = (function(){
 			
 		}				
 	}
+	
+	var canvasIndex = 0;
+	
+	function canvasPie(){
+		
+		// show shadow
+		searchSticky();
+		
+		var stageDom = $("#stage_"+PageNavEffect.getCurrentIndex());
+		if(!$('.pieDom')[0]){			
+			var s = "<canvas class='pieDom' id='pieDom"+canvasIndex+"' width='420' height='300' >[No canvas support]</canvas>";
+			stageDom.append(s);
+		}		
+		
+		$('.pieDom').css({'display':'block','width':'5px','height':'5px','left':'5px','top':'5px'}).animate(
+			{
+				"width":"420px",
+				"height":"300px",
+				"left":parseInt((stageDom.width() - 420)/2) + 'px',
+				"top" : parseInt((stageDom.height() - 300)/2) + 'px'
+			},300,"linear",function(){
+				try{					
+					ODBO.searchLevel(canvasShow);
+				}catch(e){}	
+			});
+		
+	}
+	
+
+	function canvasShow(json){
+
+        var pie1 = new RGraph.Pie('pieDom'+canvasIndex, json.arr); // Create the pie object
+		pie1.Set('chart.labels', json.labels);
+        pie1.Set('chart.gutter', 35);
+        pie1.Set('chart.title', "Sticky Notes Show");
+        pie1.Set('chart.shadow', true);		
+        pie1.Set('chart.highlight.style', '3d'); // Defaults to 3d anyway; can be 2d or 3d
+		pie1.Set('chart.colors', ['rgb(255,0,0)', '#ff0', '#ccc', 'rgb(0,0,255)', 'rgb(255,255,0)', 'rgb(0,255,255)', '#f00', '#ff0', 'black', 'white']);
+        if (!RGraph.isIE8()) {
+            pie1.Set('chart.zoom.hdir', 'up');
+            pie1.Set('chart.zoom.vdir', 'up');
+            pie1.Set('chart.contextmenu', [['Zoom in', RGraph.Zoom]]);
+        }
+		pie1.Set('chart.value.text',true);
+        pie1.Set('chart.linewidth', 3);
+        pie1.Set('chart.labels.sticks', true);
+        pie1.Set('chart.strokestyle', 'white');
+ 		
+
+        pie1.Draw();
+
+		var stageDom = $("#stage_"+PageNavEffect.getCurrentIndex());
+		$('.pieDom').css({'left':parseInt((stageDom.width() - 420)/2) -1 + 'px'});		
+
+		
+	}
 
 	
 	function timeUPdate(id){
@@ -324,14 +395,12 @@ var Sticky = (function(){
 	}
 	
 	function addColorSetting(id){
-		
-
-		
+				
 		var str ='';
 		
 		$.each(colorList,function(index,value){
 			
-			str += '<li l="'+value.l+'" class="'+value.c+'" ></li>'
+			str += '<li l="'+value.l+'" class="'+value.c+'" title="'+value.t+'" ></li>'
 			
 		});
 		
@@ -411,7 +480,7 @@ var Sticky = (function(){
 			colorClass = 'urgent';
 		}
 		
-		var str = '<div class="sticky '+colorClass+'" l="'+settings.level+'" n="'+settings.id+'" style="z-index:'+settings.zIndex+'; left:'+settings.left+'; top:'+settings.top+'" id="stickyId_'+settings.id+'"><h2><div class="o" title="Change Color." ></div><ul></ul></h2><span class="close"></span><section class="edit" contenteditable="true">'+settings.text+'</section><footer class="sfooter">'+settings.timestamp+'</footer></div>';
+		var str = '<div class="sticky '+colorClass+'" l="'+settings.level+'" n="'+settings.id+'" style="z-index:'+settings.zIndex+'; left:'+settings.left+'; top:'+settings.top+'" id="stickyId_'+settings.id+'"><h2><div class="o" title="Set Level" ></div><ul></ul></h2><span class="close"></span><section class="edit" contenteditable="true">'+settings.text+'</section><footer class="sfooter">'+settings.timestamp+'</footer></div>';
 		$(domId).append(str);
 	
 		
@@ -495,7 +564,7 @@ var Sticky = (function(){
 				$(this).remove();
 				try{
 					ODBO.del(settings.id);
-				}catch(e){}
+				}catch(e){}				
 			});			
 		}).parent().find('.o').bind('click',function(){
 			
@@ -625,6 +694,37 @@ var Sticky = (function(){
 					});					
 				});	
 		}
+		
+		function searchLevel(cb){
+			ODB.transaction(function(tx){
+				tx.executeSql("SELECT id, level FROM WebKitTest",[],function(tx,o){
+					
+					if(o.rows.length == 0){
+						alert('No Items! Please Add Note First!');
+						return;						
+					}
+					
+					var json = {};	
+					var l3 = 0,l2 = 0, l1 = 0;
+					
+					for(var i=0 , l= o.rows.length ; i< l ; i++){
+						var row = o.rows.item(i);
+						if(row['level'] == 1){
+							l1 ++;
+						}else if(row['level'] == 2){
+							l2 ++;	
+						}else if(row['level'] == 3){
+							l3 ++;	
+						}
+					}
+					json.arr = [l3,l2,l1];	
+					json.labels = ["Urgent "+l3,"Normal "+l2,"Done "+l1];
+					json.tooltips = ["Urgent "+l3,"Normal "+l2,"Done "+l1];					
+					cb(json);
+										
+				});
+			});
+		}
 
 		function dropTable(table){
 			ODB.transaction(function(tx){
@@ -647,7 +747,8 @@ var Sticky = (function(){
 			add : addItem,
 			del : deleteItemById,
 			drop : dropTable,
-			search : searchItemByStr
+			search : searchItemByStr,
+			searchLevel : searchLevel
 		}	
 		
 	})();
@@ -664,8 +765,6 @@ var Sticky = (function(){
 })();
 
 
-
-
 function extend(target, source) {
 
 	if (!target || !source) {
@@ -679,7 +778,6 @@ function extend(target, source) {
 	return target;
 
 }
-
 
 
 extend(String.prototype, (function () {
