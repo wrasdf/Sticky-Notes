@@ -262,7 +262,7 @@ var Sticky = (function(){
 			randLeftMaxNum = $(domId).width() - 180;
 			randTopMaxNum = $(domId).height() - 220;			
 			
-			$("<input type='button' id='addBtn' value='Add new sticky' /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='text' id='searchText' value='' /> <input type='button' id='searchBtn' value='search' /><div class='shadow'><span></span></div>").appendTo(domId);
+			$("<input type='button' id='addBtn' value='Add new note' /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='text' id='searchText' value='' /> <input type='button' id='searchBtn' value='search' /><div class='shadow'><span></span></div>").appendTo(domId);
 			
 			$("#addBtn").live('click',function(){				
 				addSticky({},true)
