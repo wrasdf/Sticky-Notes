@@ -186,11 +186,10 @@ header h1:hover{
 
 .sticky h2 ul{
 	position:absolute;
-	width:50px;
+	width:60px;
 	height:15px;
-	left: 0px;
+	left: 15px;
 	top:2px;
-	display:none;
 }
 .sticky h2 ul li{
 	float:left;
