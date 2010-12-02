@@ -165,7 +165,6 @@ header h1:hover{
 	background:#FEF49C;		
 }
 .sticky h2{
-	width:180px;
 	height:18px;
 	background:#feea3d;
 	cursor:move;
@@ -253,7 +252,7 @@ section.edit {
 .sfooter{
 	display:block;
 	height:20px;
-	width:180px;
+	width:100%;
 	background:#fcf086;
 	position:absolute;
 	bottom:0px;
@@ -333,4 +332,16 @@ section.edit {
 	position:absolute;
 	z-index:100000;
 }
+
+.ui-resizable { position: absolute;}
+.ui-resizable-handle { position: absolute;font-size: 0.1px;z-index: 99999; display: block;}
+.ui-resizable-disabled .ui-resizable-handle, .ui-resizable-autohide .ui-resizable-handle { display: none; }
+.ui-resizable-n { cursor: n-resize; height: 7px; width: 100%; top: -5px; left: 0; }
+.ui-resizable-s { cursor: s-resize; height: 7px; width: 100%; bottom: -5px; left: 0; }
+.ui-resizable-e { cursor: e-resize; width: 7px; right: -5px; top: 0; height: 100%; }
+.ui-resizable-w { cursor: w-resize; width: 7px; left: -5px; top: 0; height: 100%; }
+.ui-resizable-se { cursor: se-resize; width: 12px; height: 12px; right: 1px; bottom: 1px; }
+.ui-resizable-sw { cursor: sw-resize; width: 9px; height: 9px; left: -5px; bottom: -5px; }
+.ui-resizable-nw { cursor: nw-resize; width: 9px; height: 9px; left: -5px; top: -5px; }
+.ui-resizable-ne { cursor: ne-resize; width: 9px; height: 9px; right: -5px; top: -5px;}/*
 

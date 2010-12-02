@@ -226,11 +226,13 @@ var Sticky = (function(){
 	
 	var searchList = [];
 	
+	var version = '1.0.2';
+	
 	var colorList = [
 		{c:"red",l:"3",b:"#f00",t:'Urgent'},
 		{c:"yellow",l:"2",b:"#ff0",t:'Normal'},			
 		{c:"gray",l:"1",b:"#ccc",t:'Low'}
-	]		
+	];		
 
 	function randLeftNum(){
 		var m = 0,n = randLeftMaxNum || 180;
@@ -437,7 +439,10 @@ var Sticky = (function(){
 					zIndex : $(id).css("zIndex"),
 					left : $(id).css("left"),
 					top : $(id).css("top"),
-					level : $(id).attr('l')
+					level : $(id).attr('l'),
+					sw : $(id).width(),
+					sh : $(id).height(),
+					ch : $(id).height() - 10 -18 -20 
 				});				
 			}catch(e){}
 				
@@ -455,7 +460,10 @@ var Sticky = (function(){
 			left : randLeftNum() + 'px',
 			top : randTopNum() + 'px',
 			timestamp : modifiedString(),
-			level : 2
+			level : 2,
+			sw : 180,
+			sh : 220,
+			ch : 170
 		};
 		
 		if(options.id >= stickyIndex){
@@ -480,7 +488,7 @@ var Sticky = (function(){
 			colorClass = 'urgent';
 		}
 		
-		var str = '<div class="sticky '+colorClass+'" l="'+settings.level+'" n="'+settings.id+'" style="z-index:'+settings.zIndex+'; left:'+settings.left+'; top:'+settings.top+'" id="stickyId_'+settings.id+'"><h2><div class="o" title="Set Level" ></div><ul></ul></h2><span class="close"></span><section class="edit" contenteditable="true">'+settings.text+'</section><footer class="sfooter">'+settings.timestamp+'</footer></div>';
+		var str = '<div class="sticky '+colorClass+'" l="'+settings.level+'" n="'+settings.id+'" style="width:'+settings.sw+'px; height:'+settings.sh+'px  ;z-index:'+settings.zIndex+'; left:'+settings.left+'; top:'+settings.top+'" id="stickyId_'+settings.id+'"><h2><div class="o" title="Set Level" ></div><ul></ul></h2><span class="close"></span><section class="edit" contenteditable="true" style="height:'+settings.ch+'px">'+settings.text+'</section><footer class="sfooter">'+settings.timestamp+'</footer></div>';
 		$(domId).append(str);
 	
 		
@@ -503,7 +511,10 @@ var Sticky = (function(){
 						zIndex : $(this).css("zIndex"),
 						left : $(this).css("left"),
 						top : $(this).css("top"),
-						level : $(this).attr('l')
+						level : $(this).attr('l'),
+						sw : $(this).width(),
+						sh : $(this).height(),
+						ch : $(this).height() - 10 -18 -20						
 					});					
 				}catch(e){}
 
@@ -518,7 +529,10 @@ var Sticky = (function(){
 						zIndex : $(this).css("zIndex"),
 						left : $(this).css("left"),
 						top : $(this).css("top"),
-						level : $(this).attr('l')
+						level : $(this).attr('l'),
+						sw : $(this).width(),
+						sh : $(this).height(),
+						ch : $(this).height() - 10 -18 -20						
 					});					
 				}catch(e){}
 				timeUPdate(currentAddId);				
@@ -534,10 +548,68 @@ var Sticky = (function(){
 					zIndex : $(this).css("zIndex"),
 					left : $(this).css("left"),
 					top : $(this).css("top"),
-					level : $(this).attr('l')
+					level : $(this).attr('l'),
+					sw : $(this).width(),
+					sh : $(this).height(),
+					ch : $(this).height() - 10 -18 -20					
 				});				
 			}catch(e){}	
 			timeUPdate(currentAddId);
+		}).resizable({
+			minWidth:"180",
+			minHeight:"220",
+			start:function(e){
+				$(this).css('zIndex',zIndex);
+				zIndex ++;	
+				try{
+					ODBO.update({
+						id : $(this).attr("n"),
+						text : $(this).find('.edit').html(),
+						timestamp : modifiedString(),
+						zIndex : $(this).css("zIndex"),
+						left : $(this).css("left"),
+						top : $(this).css("top"),
+						level : $(this).attr('l'),
+						sw : $(this).width(),
+						sh : $(this).height(),
+						ch : $(this).height() - 10 -18 -20					
+					});				
+				}catch(e){}							
+			},
+			resize:function(e){
+				$(this).find('.edit').height($(this).height() - 10 -18 -20);
+				try{
+					ODBO.update({
+						id : $(this).attr("n"),
+						text : $(this).find('.edit').html(),
+						timestamp : modifiedString(),
+						zIndex : $(this).css("zIndex"),
+						left : $(this).css("left"),
+						top : $(this).css("top"),
+						level : $(this).attr('l'),
+						sw : $(this).width(),
+						sh : $(this).height(),
+						ch : $(this).height() - 10 -18 -20					
+					});				
+				}catch(e){}				
+			},
+			stop:function(e){
+				$(this).find('.edit').height($(this).height() - 10 -18 -20);
+				try{
+					ODBO.update({
+						id : $(this).attr("n"),
+						text : $(this).find('.edit').html(),
+						timestamp : modifiedString(),
+						zIndex : $(this).css("zIndex"),
+						left : $(this).css("left"),
+						top : $(this).css("top"),
+						level : $(this).attr('l'),
+						sw : $(this).width(),
+						sh : $(this).height(),
+						ch : $(this).height() - 10 -18 -20					
+					});				
+				}catch(e){}				
+			}
 		}).find(".edit").bind("keyup",function(){
 			// edit bind function
 			try{
@@ -548,7 +620,10 @@ var Sticky = (function(){
 					zIndex : $(this).parent().css("zIndex"),
 					left : $(this).parent().css("left"),
 					top : $(this).parent().css("top"),
-					level : $(this).parent().attr('l')
+					level : $(this).parent().attr('l'),
+					sw : $(this).parent().width(),
+					sh : $(this).parent().height(),
+					ch : $(this).parent().height() - 10 -18 -20					
 				});				
 			}catch(e){}
 
@@ -608,6 +683,35 @@ var Sticky = (function(){
 		zIndex ++;
 	}
 	
+	var LSO = (function(){
+		
+		if(!window.localStorage){
+			alert("Your browser didn't support localStorage. Please try another browser.");
+			return;
+		}
+		
+		function set(n,v){
+			localStorage.setItem(n,v); 
+		}
+		
+		function get(n){
+			return localStorage.getItem(n); 
+		}
+		
+		function remove(n){
+			localStorage.removeItem(n);  
+		}
+		
+		return {
+			
+			set : set,
+			get : get,
+			remove : remove
+			
+		}
+		
+	})();
+	
 	var ODBO = (function(){
 		
 		var ODB = null;
@@ -628,15 +732,25 @@ var Sticky = (function(){
 		
 		var idIndex = 0;
 
-		function load(cb){
+		function load(cb){			
+			
+			if(!LSO.get('version') || LSO.get('version') != version){
+				
+				try{
+					dropTable('WebKitTest');
+				}catch(e){}
+					
+				LSO.set('version',version);		
+				
+			}
 			
 			ODB.transaction(function(tx){
 				tx.executeSql("SELECT * FROM WebKitTest",[],function(tx,o){
-					
+				
 					if(o.rows.length == 0){					
 						cb.add();
 					}
-					
+				
 					for(var i=0 ,l = o.rows.length ; i < l; i++){
 
 						var row = o.rows.item(i);
@@ -648,15 +762,16 @@ var Sticky = (function(){
 					}					
 
 				},function(tx,e){
-					tx.executeSql("CREATE TABLE WebKitTest (id REAL UNIQUE, text TEXT, timestamp TEXT, zIndex REAL, left REAL, top REAL, level REAL)");
+					tx.executeSql("CREATE TABLE WebKitTest (id REAL UNIQUE, text TEXT, timestamp TEXT, zIndex REAL, left REAL, top REAL, level REAL, sw REAL, sh REAL ,ch REAL)");
 				});
-			});
-
+			});	
+				
+			
 		}
 
 		function updateItem (options) {
 			ODB.transaction(function(tx){ //id, text, timestamp, zIndex, left, top
-				tx.executeSql("UPDATE WebKitTest SET text = ?, timestamp = ?, zIndex = ?, left = ? , top = ? , level = ? WHERE id = ?", [options.text, options.timestamp, options.zIndex, options.left, options.top, options.level, options.id]);
+				tx.executeSql("UPDATE WebKitTest SET text = ?, timestamp = ?, zIndex = ?, left = ? , top = ? , level = ?, sw = ?, sh = ? , ch = ? WHERE id = ?", [options.text, options.timestamp, options.zIndex, options.left, options.top, options.level, options.sw, options.sh, options.ch, options.id]);
 			},function(tx,error){
 				alert("Error Update Item!");
 			});	
@@ -664,7 +779,7 @@ var Sticky = (function(){
 
 		function addItem(options){
 			ODB.transaction(function(tx){
-				tx.executeSql("INSERT INTO WebKitTest (id, text, timestamp, zIndex, left, top, level) VALUES (?,?,?,?,?,?,?)",[options.id, options.text, options.timestamp, options.zIndex, options.left, options.top, options.level],function(tx,o){});
+				tx.executeSql("INSERT INTO WebKitTest (id, text, timestamp, zIndex, left, top, level, sw, sh, ch) VALUES (?,?,?,?,?,?,?,?,?,?)",[options.id, options.text, options.timestamp, options.zIndex, options.left, options.top, options.level,options.sw, options.sh, options.ch],function(tx,o){});
 			},function(tx,error){
 				alert("Error Add Item!");
 			});		
