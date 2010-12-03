@@ -226,7 +226,7 @@ var Sticky = (function(){
 	
 	var searchList = [];
 	
-	var version = '1.0.2';
+	var version = '1.0.5';
 	
 	var colorList = [
 		{c:"red",l:"3",b:"#f00",t:'Urgent'},
@@ -457,8 +457,8 @@ var Sticky = (function(){
 			id : stickyIndex,
 			text : '',
 			zIndex : zIndex,
-			left : randLeftNum() + 'px',
-			top : randTopNum() + 'px',
+			left : randLeftNum(),
+			top : randTopNum(),
 			timestamp : modifiedString(),
 			level : 2,
 			sw : 180,
@@ -466,10 +466,10 @@ var Sticky = (function(){
 			ch : 170
 		};
 		
-		if(options.id >= stickyIndex){
+		if(options && options.id && options.id >= stickyIndex){
 			stickyIndex = options.id;
 		}
-		if(options.zIndex >= zIndex){
+		if(options && options.zIndex && options.zIndex >= zIndex){
 			zIndex = options.zIndex;
 		}		
 
@@ -488,7 +488,7 @@ var Sticky = (function(){
 			colorClass = 'urgent';
 		}
 		
-		var str = '<div class="sticky '+colorClass+'" l="'+settings.level+'" n="'+settings.id+'" style="width:'+settings.sw+'px; height:'+settings.sh+'px  ;z-index:'+settings.zIndex+'; left:'+settings.left+'; top:'+settings.top+'" id="stickyId_'+settings.id+'"><h2><div class="o" title="Set Level" ></div><ul></ul></h2><span class="close"></span><section class="edit" contenteditable="true" style="height:'+settings.ch+'px">'+settings.text+'</section><footer class="sfooter">'+settings.timestamp+'</footer></div>';
+		var str = '<div class="sticky '+colorClass+'" l="'+settings.level+'" n="'+settings.id+'" style="width:5px; height:5px  ;z-index:'+settings.zIndex+';" id="stickyId_'+settings.id+'"><h2><div class="o" title="Set Level" ></div><ul></ul></h2><span class="close"></span><section class="edit" contenteditable="true" style="height:'+settings.ch+'px">'+settings.text+'</section><footer class="sfooter">'+settings.timestamp+'</footer></div>';
 		$(domId).append(str);
 	
 		
@@ -496,7 +496,12 @@ var Sticky = (function(){
 			
 		addColorSetting(currentAddId);
 		
-		$(currentAddId).draggable({ 
+		$(currentAddId).animate({
+		    width: settings.sw ,
+		    height: settings.sh,
+			left : settings.left,
+			top : settings.top
+		  }, 200, 'linear').draggable({ 
 			containment: 'parent',
 			handle : 'h2',
 			opacity: 0.85,
@@ -736,10 +741,7 @@ var Sticky = (function(){
 			
 			if(!LSO.get('version') || LSO.get('version') != version){
 				
-				try{
-					dropTable('WebKitTest');
-				}catch(e){}
-					
+				dropTable('WebKitTest');					
 				LSO.set('version',version);		
 				
 			}
@@ -749,6 +751,7 @@ var Sticky = (function(){
 				
 					if(o.rows.length == 0){					
 						cb.add();
+						return;
 					}
 				
 					for(var i=0 ,l = o.rows.length ; i < l; i++){
@@ -762,7 +765,9 @@ var Sticky = (function(){
 					}					
 
 				},function(tx,e){
-					tx.executeSql("CREATE TABLE WebKitTest (id REAL UNIQUE, text TEXT, timestamp TEXT, zIndex REAL, left REAL, top REAL, level REAL, sw REAL, sh REAL ,ch REAL)");
+					tx.executeSql("CREATE TABLE WebKitTest (id REAL UNIQUE, text TEXT, timestamp TEXT, zIndex REAL, left REAL, top REAL, level REAL, sw REAL, sh REAL ,ch REAL)" , function(){
+						cb.add();
+					});
 				});
 			});	
 				
