@@ -226,7 +226,7 @@ var Sticky = (function(){
 	
 	var searchList = [];
 	
-	var version = '1.0.5';
+	var version = '1.0.8';
 	
 	var colorList = [
 		{c:"red",l:"3",b:"#f00",t:'Urgent'},
@@ -737,20 +737,22 @@ var Sticky = (function(){
 		
 		var idIndex = 0;
 
-		function load(cb){			
+		function load(cb){
 			
-			if(!LSO.get('version') || LSO.get('version') != version){
-				
-				dropTable('WebKitTest');					
-				LSO.set('version',version);		
-				
+			if(!LSO.get('version')){
+				LSO.set('version',version);	
+			}
+			
+			if(LSO.get('version') != version){
+				dropTable('WebKitTest');
+				LSO.set('version',version);
 			}
 			
 			ODB.transaction(function(tx){
 				tx.executeSql("SELECT * FROM WebKitTest",[],function(tx,o){
 				
 					if(o.rows.length == 0){					
-						cb.add('',true);
+						cb.add({},true);
 						return;
 					}
 				
@@ -765,8 +767,8 @@ var Sticky = (function(){
 					}					
 
 				},function(tx,e){
-					tx.executeSql("CREATE TABLE WebKitTest (id REAL UNIQUE, text TEXT, timestamp TEXT, zIndex REAL, left REAL, top REAL, level REAL, sw REAL, sh REAL ,ch REAL)" , function(){
-						cb.add('',true);
+					tx.executeSql("CREATE TABLE WebKitTest (id REAL UNIQUE, text TEXT, timestamp TEXT, zIndex REAL, left REAL, top REAL, level REAL, sw REAL, sh REAL ,ch REAL)" ,[], function(){
+						cb.add({},true);
 					});
 				});
 			});	
