@@ -240,7 +240,7 @@ var Sticky = (function(){
 	}
 
 	function randTopNum(){
-		var m = 0,n = randTopMaxNum || 300;
+		var m = 25,n = randTopMaxNum || 300;
 		return parseInt(Math.random()*(n-m)+m);		
 	}
 
@@ -255,6 +255,7 @@ var Sticky = (function(){
 	var inputFocus = null;
 	
 	function init(ID){
+
 		
 		if(!$("#addBtn")[0]){
 			
@@ -717,7 +718,7 @@ var Sticky = (function(){
 	
 	function deleteAllNotes(){	
 		
-		if(window.confirm("Are u sure , u want to clean all notes?")){
+		if(window.confirm("Are you sure , you want to delete all notes?")){
 		
 			for(var i in addStickyList){
 				deleteNoteById(i);
