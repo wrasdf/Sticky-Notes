@@ -219,6 +219,7 @@ header h1:hover{
 	width:25px;
 	height:25px;
 	display:none;
+	z-index:99999999;
 }
 .sticky:hover .close{
 	display:block;

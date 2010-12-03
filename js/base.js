@@ -750,7 +750,7 @@ var Sticky = (function(){
 				tx.executeSql("SELECT * FROM WebKitTest",[],function(tx,o){
 				
 					if(o.rows.length == 0){					
-						cb.add();
+						cb.add('',true);
 						return;
 					}
 				
@@ -766,7 +766,7 @@ var Sticky = (function(){
 
 				},function(tx,e){
 					tx.executeSql("CREATE TABLE WebKitTest (id REAL UNIQUE, text TEXT, timestamp TEXT, zIndex REAL, left REAL, top REAL, level REAL, sw REAL, sh REAL ,ch REAL)" , function(){
-						cb.add();
+						cb.add('',true);
 					});
 				});
 			});	
