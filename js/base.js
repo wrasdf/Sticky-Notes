@@ -256,15 +256,13 @@ var Sticky = (function(){
 	
 	function init(ID){
 		
-		//ODBO.drop('WebkitTest');
-		
 		if(!$("#addBtn")[0]){
 			
 			domId = ID;
 			randLeftMaxNum = $(domId).width() - 180;
 			randTopMaxNum = $(domId).height() - 220;			
 			
-			$("<input type='button' id='addBtn' value='Add new note' /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='text' id='searchText' value='' /> <input type='button' id='searchBtn' value='Search' />&nbsp;&nbsp;&nbsp;&nbsp;<input type='button' id='canvasBtn' value='Statistic' /><div class='shadow'><span></span></div>").appendTo(domId);
+			$("<input type='button' id='addBtn' value='Add new note' /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='text' id='searchText' value='' /> <input type='button' id='searchBtn' value='Search' />&nbsp;&nbsp;&nbsp;&nbsp;<input type='button' id='canvasBtn' value='Statistic' />&nbsp;&nbsp;&nbsp;&nbsp;<input type='button' id='deleteAllBtn' value='Delete All' style='display:none' /><div class='shadow'><span></span></div>").appendTo(domId);
 			
 			$("#addBtn").live('click',function(){				
 				addSticky({},true)
@@ -287,6 +285,10 @@ var Sticky = (function(){
 				}
 				
 			});	
+			
+			$('#deleteAllBtn').live('click',function(){
+				deleteAllNotes();
+			});
 			
 			$("#searchText").live('focus',function(){
 				inputFocus = true;
@@ -450,7 +452,14 @@ var Sticky = (function(){
 		
 	}
 	
-	
+	function showDeleteBtn(){
+		
+		if(!$('#deleteAllBtn')[0] || $('#deleteAllBtn').css('display') == 'none'){
+			$('#deleteAllBtn').show();
+		}
+		
+	}	
+		
 	function addSticky(options,flag){
 		
 		var settings = {
@@ -493,8 +502,12 @@ var Sticky = (function(){
 	
 		
 		var currentAddId = "#stickyId_"+settings.id;
-			
+		
+		// add color setting for note	
 		addColorSetting(currentAddId);
+		
+		// show delete all button
+		showDeleteBtn();
 		
 		$(currentAddId).animate({
 		    width: settings.sw ,
@@ -635,17 +648,10 @@ var Sticky = (function(){
 			timeUPdate(currentAddId);
 						
 		}).parent().find('.close').bind("click",function(){	
+			
 			// close sticky notes function	
-			$(this).parent().hide('slow',function(){
-				searchList.pop();
-				if(searchList.length <= 0 && $('.shadow').css('display') != 'none'){
-					$('.shadow').css('display','none')
-				}
-				$(this).remove();
-				try{
-					ODBO.del(settings.id);
-				}catch(e){}				
-			});			
+			deleteNoteById(settings.id)
+					
 		}).parent().find('.o').bind('click',function(){
 			
 			var ulDom = $(this).parent().find('ul');
@@ -678,10 +684,52 @@ var Sticky = (function(){
 			try{
 				ODBO.add(settings);
 			}catch(e){}					
-		}		
+		}	
+	
+	}
+	
+	function deleteNoteById(id){	
+		
+		$("#stickyId_"+id).hide('slow',function(){
+			searchList.pop();
+			if(searchList.length <= 0 && $('.shadow').css('display') != 'none'){
+				$('.shadow').css('display','none')
+			}
+			$(this).remove();
+			
+			try{
+				ODBO.del(id);
+			}catch(e){}		
+				
+			delete addStickyList[id];			
+			for(var i in addStickyList){
+				if(i){
+					return;
+				}
+			}
+						
+			$('#deleteAllBtn').css('display','none');		
+				
+		});	
+
 			
 	}
 	
+	function deleteAllNotes(){	
+		
+		if(window.confirm("Are u sure , u want to clean all notes?")){
+		
+			for(var i in addStickyList){
+				deleteNoteById(i);
+			}
+		
+			$('#deleteAllBtn').css('display','none');
+			
+		}else{
+			return
+		}
+		
+	}
 	
 	function searchSticky(){	
 		$('.shadow').css({'display':'block','width':$('.stage').width(),'height':$('.stage').height(),'zIndex':zIndex});
@@ -799,6 +847,18 @@ var Sticky = (function(){
 				alert("Error Delete Item!");
 			});
 		}
+		
+		function deleteTable(table,callSuccess,callError){
+			ODB.transaction(function(tx){
+				tx.executeSql("DELETE FROM " + table,[],function(tx,o){
+					callSuccess(o);
+				});
+			},function(tx,error){
+				if(callError){
+					callError(error);
+				}
+			});			
+		}
 
 		function searchItemByStr(str){
 				ODB.transaction(function(tx){
@@ -870,7 +930,8 @@ var Sticky = (function(){
 			del : deleteItemById,
 			drop : dropTable,
 			search : searchItemByStr,
-			searchLevel : searchLevel
+			searchLevel : searchLevel,
+			deleteTable : deleteTable
 		}	
 		
 	})();
