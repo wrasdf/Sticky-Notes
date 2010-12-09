@@ -226,7 +226,7 @@ var Sticky = (function(){
 	
 	var searchList = [];
 	
-	var version = '1.0.8';
+	var version = '1.1.0';
 	
 	var colorList = [
 		{c:"red",l:"3",b:"#f00",t:'Urgent'},
@@ -261,10 +261,22 @@ var Sticky = (function(){
 			
 			domId = ID;
 			randLeftMaxNum = $(domId).width() - 180;
-			randTopMaxNum = $(domId).height() - 220;			
+			randTopMaxNum = $(domId).height() - 220;
 			
-			$("<input type='button' id='addBtn' value='Add new note' /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='text' id='searchText' value='' /> <input type='button' id='searchBtn' value='Search' />&nbsp;&nbsp;&nbsp;&nbsp;<input type='button' id='canvasBtn' value='Statistic' />&nbsp;&nbsp;&nbsp;&nbsp;<input type='button' id='deleteAllBtn' value='Delete All' style='display:none' /><div class='shadow'><span></span></div>").appendTo(domId);
+			var str = "<input type='button' id='addBtn' value='Add new note' /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+				str += "<input type='text' id='searchText' value='' /> <input type='button' id='searchBtn' value='Search' />&nbsp;&nbsp;&nbsp;&nbsp;"		
+				str += "<input type='button' id='canvasBtn' value='Statistic' />&nbsp;&nbsp;&nbsp;&nbsp;";
+				str += "<input type='button' id='deleteAllBtn' value='Delete All' style='display:none' />";
+				str += "<div class='shadow'><span></span></div>";			
+			//$("<input type='button' id='addBtn' value='Add new note' /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='text' id='searchText' value='' /> <input type='button' id='searchBtn' value='Search' />&nbsp;&nbsp;&nbsp;&nbsp;       <input type='button' id='canvasBtn' value='Statistic' />&nbsp;&nbsp;&nbsp;&nbsp;  <input type='button' id='deleteAllBtn' value='Delete All' style='display:none' /><div class='shadow'><span></span></div>").appendTo(domId);
 			
+				str += "<div class='dialog'>";
+				str += "<div class='title'><span class='t'></span><a href='javascript:;' class='dialogClose'></a></div><div class='dialogContent'>";
+				str += "<p style='display:none;'>There is No note here.</p>";
+				str += "</div></div>";				
+			
+			$(str).appendTo(domId);
+				
 			$("#addBtn").live('click',function(){				
 				addSticky({},true)
 			});
@@ -280,10 +292,7 @@ var Sticky = (function(){
 				$(this).parent().css('display','none');
 				searchList = [];
 				
-				if($('.pieDom').css('display') != 'none'){
-					$('.pieDom').remove();
-					canvasIndex++;
-				}
+				hideCanvas();
 				
 			});	
 			
@@ -299,6 +308,10 @@ var Sticky = (function(){
 			
 			$("#canvasBtn").live('click',function(){
 				canvasPie();
+			});
+			
+			$('.dialog a.dialogClose').live('click',function(){
+				dialoghide();				
 			});
 			
 			$(document).bind('keydown',function(e){
@@ -317,10 +330,12 @@ var Sticky = (function(){
 						$('.shadow').css('display','none');
 						searchList = [];
 						
-						if($('.pieDom').css('display') != 'none'){
-							$('.pieDom').remove();
-							canvasIndex++;
-						}												
+						hideCanvas();
+						
+						if($('#searchText')[0]){
+							$('#searchText').focus();
+						}
+																	
 					}					
 				}
 			})
@@ -337,41 +352,86 @@ var Sticky = (function(){
 			
 		}				
 	}
+
+	
+	function hideCanvas(){
+		
+		if($('.dialog').css('display') != 'none'){
+			$('.dialog').css('display','none').find('canvas').remove();
+			canvasIndex ++;							
+		}		
+		
+		$('.dialog p').css('display','none');
+		
+	}
 	
 	var canvasIndex = 0;
 	
-	function canvasPie(){
+	function dialogShow(options){
 		
-		// show shadow
-		searchSticky();
+		/*
+		options = {
+			title : '',
+			cb : cb		
+		}
+		*/
 		
 		var stageDom = $("#stage_"+PageNavEffect.getCurrentIndex());
-		if(!$('.pieDom')[0]){			
-			var s = "<canvas class='pieDom' id='pieDom"+canvasIndex+"' width='420' height='300' >[No canvas support]</canvas>";
-			stageDom.append(s);
-		}		
 		
-		$('.pieDom').css({'display':'block','width':'5px','height':'5px','left':'5px','top':'5px'}).animate(
+		searchSticky();
+		
+		$('.dialog').css({'display':'block','width':'5px','height':'5px','left':'5px','top':'5px'}).animate(
 			{
 				"width":"420px",
 				"height":"300px",
 				"left":parseInt((stageDom.width() - 420)/2) + 'px',
-				"top" : parseInt((stageDom.height() - 300)/2) + 'px'
-			},300,"linear",function(){
-				try{					
-					ODBO.searchLevel(canvasShow);
-				}catch(e){}	
-			});
+				"top" : parseInt((stageDom.height() - 330)/2) + 'px'
+			},300,"linear",function(){				
+				$('.dialog .t').html(options.title);	
+				options.cb();
+				
+			});		
 		
 	}
 	
-
+	
+	function dialoghide(cb){
+		
+		
+		$('.shadow').css('display','none');		
+		hideCanvas();
+		
+		if(cb){
+			cb();
+		}
+		
+		
+	}
+		
+	
+	function canvasPie(){
+		
+		var options = {
+			title : 'Sticky Notes Statistics',
+			cb : function(){
+				$('.dialog p').css('display','block').html('loading...');
+				$("<canvas style='position:absolute;display:none;' id='pieDom"+canvasIndex+"' class='pieDom' width='408' height='260' >[No canvas support]</canvas>").appendTo($('.dialog div.dialogContent'));
+				try{					
+					ODBO.searchLevel(canvasShow);
+				}catch(e){}				
+			}
+		}
+		
+		dialogShow(options);
+				
+	}
+	
 	function canvasShow(json){
 
         var pie1 = new RGraph.Pie('pieDom'+canvasIndex, json.arr); // Create the pie object
 		pie1.Set('chart.labels', json.labels);
         pie1.Set('chart.gutter', 35);
-        pie1.Set('chart.title', "Sticky Notes Statistics");
+       // pie1.Set('chart.title', "Sticky Notes Statistics");
         pie1.Set('chart.shadow', true);		
         pie1.Set('chart.highlight.style', '3d'); // Defaults to 3d anyway; can be 2d or 3d
 		pie1.Set('chart.colors', ['rgb(255,0,0)', '#ff0', '#ccc', 'rgb(0,0,255)', 'rgb(255,255,0)', 'rgb(0,255,255)', '#f00', '#ff0', 'black', 'white']);
@@ -387,13 +447,11 @@ var Sticky = (function(){
  		
 
         pie1.Draw();
-
-		var stageDom = $("#stage_"+PageNavEffect.getCurrentIndex());
-		$('.pieDom').css({'left':parseInt((stageDom.width() - 420)/2) -1 + 'px'});		
+		$('.dialog p').css('display','none');		
+		$('#pieDom'+canvasIndex).css({'display':'block','left':1 + 'px'});		
 
 		
 	}
-
 	
 	function timeUPdate(id){
 		$(id).find('.sfooter').html(modifiedString());
@@ -737,6 +795,18 @@ var Sticky = (function(){
 		zIndex ++;
 	}
 	
+	function searchNoItemShow(){
+		
+		var options = {
+			title : 'Search Notes',
+			cb : function(){
+				$('.dialog p').css('display','block').html('Sorry,there is no note you want.');			
+			}
+		}		
+		dialogShow(options);		
+	
+	}
+	
 	var LSO = (function(){
 		
 		if(!window.localStorage){
@@ -864,7 +934,8 @@ var Sticky = (function(){
 		function searchItemByStr(str){
 				ODB.transaction(function(tx){
 					tx.executeSql("SELECT id, text FROM WebKitTest WHERE text LIKE '%"+str+"%' ",[],function(tx,o){				
-						if(o.rows.length == 0){
+						if(o.rows.length == 0){						
+							searchNoItemShow();							
 							return;
 						}
 						for(var i=0 ,l = o.rows.length ; i < l; i++){
@@ -883,7 +954,8 @@ var Sticky = (function(){
 				tx.executeSql("SELECT id, level FROM WebKitTest",[],function(tx,o){
 					
 					if(o.rows.length == 0){
-						alert('No Items! Please Add Note First!');
+						$('.dialog p').css('display','block').html('There is No note here.');
+						$('.dialog canvas').css('display','none');
 						return;						
 					}
 					

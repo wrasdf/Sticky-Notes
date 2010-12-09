@@ -325,15 +325,60 @@ section.edit {
 	color:#000;	
 }
 
-.pieDom{
+.dialog{
 	width:420px;
-	height:300px;
-	display:none;
-	border:1px #000 solid;
+	height:330px;
+	border:1px #ccc solid;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	padding:2px;
+	z-index:100000;	
 	background:#fff;
 	position:absolute;
-	z-index:100000;
+	display:none;	
 }
+
+.dialog > .title{
+	height:30px;
+	line-height:30px;
+	border:1px #ccc solid;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	background:-webkit-gradient(linear,left top,left bottom,from(#ccc),to(#999));/*for webkit*/
+	background:-moz-linear-gradient(center bottom,#ccc,#999);		
+}
+
+.dialog > .dialogContent{
+	position:relative;
+	padding:5px;
+}
+.dialog .t{
+	height:30px;
+	display:inline-block;
+	float:left;
+	padding:0 0 0 10px;
+	font-weight:bold;
+}
+.dialog p{
+	margin:20px 0 0 0;
+}
+.dialog  .dialogClose{
+	display:inline-block;
+	width:18px;
+	height:18px;
+	float:right;
+	margin:4px 5px 0 0;
+	background:url("../images/c.png") 0px 0px no-repeat;
+}
+.dialog  .dialogClose:hover{
+	background:url("../images/c.png") -18px 0px no-repeat;
+}
+.pieDom{
+	position:absolute;
+	margin:0px auto;
+	left:0px;
+}
+
 
 .ui-resizable { position: absolute;}
 .ui-resizable-handle { position: absolute;font-size: 0.1px;z-index: 99999; display: block;}
@@ -345,5 +390,18 @@ section.edit {
 .ui-resizable-se { cursor: se-resize; width: 20px; height: 20px; right: 1px; bottom: 1px; }
 .ui-resizable-sw { cursor: sw-resize; width: 9px; height: 9px; left: -5px; bottom: -5px; }
 .ui-resizable-nw { cursor: nw-resize; width: 9px; height: 9px; left: -5px; top: -5px; }
-.ui-resizable-ne { cursor: ne-resize; width: 9px; height: 9px; right: -5px; top: -5px;}/*
+.ui-resizable-ne { cursor: ne-resize; width: 9px; height: 9px; right: -5px; top: -5px;}
 
+
+
+.ui-dialog { position: absolute; padding: .2em; width: 300px; }
+.ui-dialog .ui-dialog-titlebar { padding: .5em .3em .3em 1em; position: relative;  }
+.ui-dialog .ui-dialog-title { float: left; margin: .1em 0 .2em; } 
+.ui-dialog .ui-dialog-titlebar-close { position: absolute; right: .3em; top: 50%; width: 19px; margin: -10px 0 0 0; padding: 1px; height: 18px; }
+.ui-dialog .ui-dialog-titlebar-close span { display: block; margin: 1px; }
+.ui-dialog .ui-dialog-titlebar-close:hover, .ui-dialog .ui-dialog-titlebar-close:focus { padding: 0; }
+.ui-dialog .ui-dialog-content { border: 0; padding: .5em 1em; background: none; overflow: auto; zoom: 1; }
+.ui-dialog .ui-dialog-buttonpane { text-align: left; border-width: 1px 0 0 0; background-image: none; margin: .5em 0 0 0; padding: .3em 1em .5em .4em; }
+.ui-dialog .ui-dialog-buttonpane button { float: right; margin: .5em .4em .5em 0; cursor: pointer; padding: .2em .6em .3em .6em; line-height: 1.4em; width:auto; overflow:visible; }
+.ui-dialog .ui-resizable-se { width: 14px; height: 14px; right: 3px; bottom: 3px; }
+.ui-draggable .ui-dialog-titlebar { cursor: move; }
